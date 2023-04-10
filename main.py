@@ -5,55 +5,62 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
 # Определяем переменную величину
-years = 1
-frames = years * 365
-seconds_in_year = 365 * 24 * 60 * 60
+days = 28
+frames = days * 24
+seconds_in_day = 24 * 60 * 60
 
-t = np.linspace(0, years * seconds_in_year, frames)
+t = np.linspace(0, days * seconds_in_day, frames)
 
 # Определяем функцию для системы дифференциальных уравнений
 def move_func(s, t):
-    x, v_x, y, v_y = s
+    x_m, v_x_m, y_m, v_y_m = s
     
-    dxdt = v_x
-    dv_xdt = - G * m * x / (x**2 + y**2)**1.5
-    dydt = v_y
-    dv_ydt = - G * m * y / (x**2 + y**2)**1.5
+    dx_mdt = v_x_m
+    dv_x_mdt = - G * earth_mass * x_m / (x_m**2 + y_m**2)**1.5
+    dy_mdt = v_y_m
+    dv_y_mdt = - G * earth_mass * y_m / (x_m**2 + y_m**2)**1.5
     
-    return dxdt, dv_xdt, dydt, dv_ydt
+    return dx_mdt, dv_x_mdt, dy_mdt, dv_y_mdt
 
 # Определяем постоянные и начальные параметры
 G = 6.67 * 10**(-11)
-m = 1.98 * 10**(30)
+earth_mass = 5.9742 * 10**(24)
+average_earth_moon_distance = 384400000
+moon_semi_major_axis = 384748000
+moon_perigee = 362600000
+moon_apogee = 405400000
+moon_gravitational_parameter = G * earth_mass
+moon_eccentricity = 0.0549006
+moon_focal_length = moon_semi_major_axis * moon_eccentricity
 
-x0 = 149 * 10**9
-v_x0 = 0
-y0 = 0
-v_y0 = 30000
+x_m0 = moon_semi_major_axis
+v_x_m0 = 0
+y_m0 = 0
+v_y_m0 = np.sqrt(moon_gravitational_parameter * (2 / moon_apogee - 1 / moon_semi_major_axis))
 
-s0 = (x0, v_x0, y0, v_y0)
+s0 = (x_m0, v_x_m0, y_m0, v_y_m0)
 
 # Решаем систему дифференциальных уравнений
 def solve_func(i, key):
     sol = odeint(move_func, s0, t)
-    if key == 'point':
-        x = sol[i, 0]
-        y = sol[i, 2]
+    if key == 'satellite':
+        x_m = sol[i, 0]
+        y_m = sol[i, 2]
     else:
-        x = sol[:i, 0]
-        y = sol[:i, 2]
-    return x, y
+        x_m = sol[:i, 0]
+        y_m = sol[:i, 2]
+    return x_m, y_m
 
 # Строим решение в виде графика и анимируем
 fig, ax = plt.subplots()
 
-ball, = plt.plot([], [], 'o', color='b')
-ball_line, = plt.plot([], [], '-', color='b')
-plt.plot([0], [0], 'o', color='y', ms=20)
+moon, = plt.plot([], [], 'o', color='darkgrey')
+moon_trajectory, = plt.plot([], [], '-', color='lightgrey')
+plt.plot([moon_focal_length], [0], 'o', color='royalblue', ms=20)
 
 def animate(i):
-    ball.set_data(solve_func(i, 'point'))
-    ball_line.set_data(solve_func(i, 'line'))
+    moon.set_data(solve_func(i, 'satellite'))
+    moon_trajectory.set_data(solve_func(i, 'trajectory'))
     
 ani = FuncAnimation(fig,
                     animate,
@@ -61,7 +68,7 @@ ani = FuncAnimation(fig,
                     interval=30)
 
 plt.axis('equal')
-edge = 2*x0
+edge = 2 * x_m0
 ax.set_xlim(-edge, edge)
 ax.set_ylim(-edge, edge)
 
