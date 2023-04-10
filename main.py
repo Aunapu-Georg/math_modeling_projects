@@ -1,69 +1,68 @@
+# Импортируем необходимые библиотеки
 import numpy as np
 from scipy.integrate import odeint
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
-frames = 200
-t = np.linspace(0, 5, frames)
+# Определяем переменную величину
+years = 1
+frames = years * 365
+seconds_in_year = 365 * 24 * 60 * 60
 
-def move_func(z, t):
-    x_m, v_x_m, y_m, v_y_m, x_s, v_x_s, y_s, v_y_s = z
-    dx_mdt = v_x_m
-    dv_x_mdt = - G * M_e * x / (x**2 + y**2)**1.5
-    dy_mdt = v_y_m
-    dv_y_mdt = 0
-    dx_sdt = 0
-    dv_x_stdt = v_x_s
-    dy_sdt = 0
-    dv_y_sdt = v_y_s
-    return dx_mdt, dv_x_mdt, dy_mdt, dv_y_mdt, dx_sdt, dv_x_stdt, dy_sdt, dv_y_sdt
+t = np.linspace(0, years * seconds_in_year, frames)
 
-G = 6.67 * 10 ** -11
-M_e = 5.9742 * 10 ** 24
-M_m = 7.36 * 10 ** 22
-m_s = 425800
-R_e_m = 384403000
-Ts_m = 27.322 * 24 * 60 ** 2
-v_m = 2 * np.pi * R_e_m / Ts_m
+# Определяем функцию для системы дифференциальных уравнений
+def move_func(s, t):
+    x, v_x, y, v_y = s
+    
+    dxdt = v_x
+    dv_xdt = - G * m * x / (x**2 + y**2)**1.5
+    dydt = v_y
+    dv_ydt = - G * m * y / (x**2 + y**2)**1.5
+    
+    return dxdt, dv_xdt, dydt, dv_ydt
 
-x0_m = 0
-v_x0_m = 0
-y0_m = 0
-v_y0_m = 0
-x0_s = 0
-v_x0_s = 0
-y0_s = 0
-v_y0_s = 0
+# Определяем постоянные и начальные параметры
+G = 6.67 * 10**(-11)
+m = 1.98 * 10**(30)
 
-z0 = x0_m, v_x0_m, y0_m, v_y0_m, x0_s, v_x0s, y0_s, v_y0_s
+x0 = 149 * 10**9
+v_x0 = 0
+y0 = 0
+v_y0 = 30000
 
+s0 = (x0, v_x0, y0, v_y0)
+
+# Решаем систему дифференциальных уравнений
 def solve_func(i, key):
-    sol = odeint(move_func, z0, t)
-    if key == 'moon':
+    sol = odeint(move_func, s0, t)
+    if key == 'point':
+        x = sol[i, 0]
+        y = sol[i, 2]
+    else:
         x = sol[:i, 0]
         y = sol[:i, 2]
-    else:
-        x = sol[:i, 4]
-        y = sol[:i, 6]
-    return  x, y
-  
+    return x, y
+
+# Строим решение в виде графика и анимируем
 fig, ax = plt.subplots()
 
-moon, = plt.plot([], [], 'o', color='y')
-satellite, = plt.plot([], [], 'o', color='r')
-earth = plt.plot(0, 0, 'o', color='g')
+ball, = plt.plot([], [], 'o', color='b')
+ball_line, = plt.plot([], [], '-', color='b')
+plt.plot([0], [0], 'o', color='y', ms=20)
 
 def animate(i):
-    moon.set_data(solve_func(i, 'moon'))
-    satellite.set_data(solve_func(i, 'satellite'))
-
+    ball.set_data(solve_func(i, 'point'))
+    ball_line.set_data(solve_func(i, 'line'))
+    
 ani = FuncAnimation(fig,
                     animate,
                     frames=frames,
                     interval=30)
 
-edge = 0
+plt.axis('equal')
+edge = 2*x0
 ax.set_xlim(-edge, edge)
-ax.set_ylim(edge, edge)
+ax.set_ylim(-edge, edge)
 
 ani.save('ani.gif')
