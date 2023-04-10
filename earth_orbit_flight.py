@@ -37,21 +37,19 @@ s0 = (x_s0, v_x_s0, y_s0, v_y_s0)
 # Решение системы дифференциальных уравнений
 def solve_func(i, key):
     sol = odeint(move_func, s0, t)
-
     if key == 'launch_vehicle':
         x = sol[i, 0]
         y = sol[i, 2]
     else:
         x = sol[:i, 0]
         y = sol[:i, 2]
-
     return x, y
 
 # Построение решения в виде графика и анимация
 fig, ax = plt.subplots()
 
-launch_vehicle, = plt.plot([], [], 'o', color='red', ms=2)
-launch_vehicle_trajectory, = plt.plot([], [], '-', color='tomato', lw=1)
+launch_vehicle, = plt.plot([], [], 'o', color='red', ms=2, label='"Чанчжэн-3В"')
+launch_vehicle_trajectory, = plt.plot([], [], '-', color='tomato', lw=1, label='Траектория ракетоносителя')
 plt.plot([0], [0], 'o', color='royalblue', ms=32)
 
 def animate(i):
@@ -70,6 +68,7 @@ ax.set_xlim(-edge, edge)
 ax.set_ylim(-edge, edge)
 ax.set_xlabel('Ось абсцисс, м')
 ax.set_ylabel('Ось ординат, м')
+ax.legend(loc='lower right')
 plt.title('"Чанчжэн-3В" выведен на геостационарную орбиту Земли')
 
 ani.save('earth_orbit_flight.gif')
