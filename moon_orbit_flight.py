@@ -16,13 +16,13 @@ def move_func(s, t):
     x_m, v_x_m, y_m, v_y_m, x_s, v_x_s, y_s, v_y_s = s
     
     dx_mdt = v_x_m
-    dv_x_mdt = - G * earth_mass * x_m / (x_m**2 + y_m**2)**1.5
+    dv_x_mdt = - G * earth_mass * (x_m - earth_focal_length) / ((x_m - earth_focal_length)**2 + y_m**2)**1.5
     dy_mdt = v_y_m
-    dv_y_mdt = - G * earth_mass * y_m / (x_m**2 + y_m**2)**1.5
+    dv_y_mdt = - G * earth_mass * y_m / ((x_m - earth_focal_length)**2 + y_m**2)**1.5
     dx_sdt = v_x_s
-    dv_x_sdt = - G * earth_mass * (x_s - earth_focal_length) / ((x_s - earth_focal_length)**2 + y_s**2)**1.5
+    dv_x_sdt = - G * moon_mass * (x_s - x_m) / ((x_s - x_m)**2 + (y_s - y_m)**2)**1.5
     dy_sdt = v_y_s
-    dv_y_sdt = - G * earth_mass * y_s / ((x_s - earth_focal_length)**2 + y_s**2)**1.5
+    dv_y_sdt = - G * moon_mass * (y_s - y_m) / ((x_s - x_m)**2 + (y_s - y_m)**2)**1.5
     
     return dx_mdt, dv_x_mdt, dy_mdt, dv_y_mdt, dx_sdt, dv_x_sdt, dy_sdt, dv_y_sdt
 
@@ -33,9 +33,8 @@ earth_gravitational_parameter = G * earth_mass
 moon_mass = 7.3477 * 10**(22)
 moon_gravitational_parameter = G * moon_mass
 
-average_earth_moon_distance = 384400000
 moon_semi_major_axis = 384748000
-moon_perigee = 362600000
+# moon_perigee = 362600000
 moon_apogee = 405400000
 moon_eccentricity = 0.0549006
 earth_focal_length = moon_semi_major_axis * moon_eccentricity
@@ -96,6 +95,6 @@ ax.set_xlim(-edge, edge)
 ax.set_ylim(-edge, edge)
 ax.set_xlabel('Ось абсцисс, метры')
 ax.set_ylabel('Ось ординат, метры')
-plt.title('"Чанчжэн-3В" совершает перлёт с Земной орбиты на Лунную')
+plt.title('"Чанчжэн-3В" на окололунной орбите')
 
 ani.save('ani.gif')
