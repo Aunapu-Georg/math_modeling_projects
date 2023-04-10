@@ -92,6 +92,6 @@ ax.set_xlim(-edge, edge)
 ax.set_ylim(-edge, edge)
 ax.set_xlabel('Ось абсцисс, метры')
 ax.set_ylabel('Ось ординат, метры')
-plt.title('"Чанчжэн-3В" выведен на круговую орбиту Земли')
+plt.title('"Чанчжэн-3В" совершает перлёт с Земной орбиты на Лунную')
 
 ani.save('ani.gif')

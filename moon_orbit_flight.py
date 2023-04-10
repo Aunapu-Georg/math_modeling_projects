@@ -5,9 +5,9 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
 # Определяем переменную величину
-days = 28
-frames = days * 24
+days = 27.5
 seconds_in_day = 24 * 60 * 60
+frames = 500
 
 t = np.linspace(0, days * seconds_in_day, frames)
 
@@ -29,23 +29,27 @@ def move_func(s, t):
 # Определяем постоянные и начальные параметры
 G = 6.67 * 10**(-11)
 earth_mass = 5.9742 * 10**(24)
+earth_gravitational_parameter = G * earth_mass
+moon_mass = 7.3477 * 10**(22)
+moon_gravitational_parameter = G * moon_mass
+
 average_earth_moon_distance = 384400000
 moon_semi_major_axis = 384748000
 moon_perigee = 362600000
 moon_apogee = 405400000
-earth_gravitational_parameter = G * earth_mass
 moon_eccentricity = 0.0549006
 earth_focal_length = moon_semi_major_axis * moon_eccentricity
-geostationary_orbit_length = 35786000
+moon_radius = 1737400
+satellite_orbit_length = moon_radius + 15000
 
 x_m0 = moon_semi_major_axis
 v_x_m0 = 0
 y_m0 = 0
 v_y_m0 = np.sqrt(earth_gravitational_parameter * (2 / moon_apogee - 1 / moon_semi_major_axis))
-x_s0 = earth_focal_length
-v_x_s0 = -np.sqrt(earth_gravitational_parameter / geostationary_orbit_length)
-y_s0 = geostationary_orbit_length
-v_y_s0 = 0
+x_s0 = moon_semi_major_axis + satellite_orbit_length
+v_x_s0 = 0
+y_s0 = 0
+v_y_s0 = np.sqrt(moon_gravitational_parameter / satellite_orbit_length)
 
 s0 = (x_m0, v_x_m0, y_m0, v_y_m0, x_s0, v_x_s0, y_s0, v_y_s0)
 
@@ -92,6 +96,6 @@ ax.set_xlim(-edge, edge)
 ax.set_ylim(-edge, edge)
 ax.set_xlabel('Ось абсцисс, метры')
 ax.set_ylabel('Ось ординат, метры')
-plt.title('"Чанчжэн-3В" выведен на круговую орбиту Земли')
+plt.title('"Чанчжэн-3В" совершает перлёт с Земной орбиты на Лунную')
 
 ani.save('ani.gif')
