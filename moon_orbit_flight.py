@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
 # Определяем переменную величину
-hours = 48
+hours = 1.83
 seconds_in_hour = 60 ** 2
 frames = 500
 t = np.linspace(0, hours * seconds_in_hour, frames)
@@ -25,11 +25,12 @@ def move_func(s, t):
 G = 6.67 * 10**(-11)
 moon_mass = 7.3477 * 10**(22)
 moon_gravitational_parameter = G * moon_mass
-geostationary_orbit_length = 42164000
+moon_radius = 1737400
+satellite_orbit_length = moon_radius + 15000
 
 x_s0 = 0
-v_x_s0 = -np.sqrt(moon_gravitational_parameter / geostationary_orbit_length)
-y_s0 = geostationary_orbit_length
+v_x_s0 = -np.sqrt(moon_gravitational_parameter / satellite_orbit_length)
+y_s0 = satellite_orbit_length
 v_y_s0 = 0
 
 s0 = (x_s0, v_x_s0, y_s0, v_y_s0)
@@ -50,7 +51,7 @@ fig, ax = plt.subplots()
 
 launch_vehicle, = plt.plot([], [], 'o', color='red', ms=2, label='"Чанчжэн-3В"')
 launch_vehicle_trajectory, = plt.plot([], [], '-', color='tomato', lw=1, label='Траектория ракетоносителя')
-plt.plot([0], [0], 'o', color='royalblue', ms=32)
+plt.plot([0], [0], 'o', color='darkgrey', ms=200)
 
 def animate(i):
     launch_vehicle.set_data(solve_func(i, 'launch_vehicle'))
@@ -63,7 +64,7 @@ ani = FuncAnimation(fig,
 
 # Оформление координатной плоскости
 plt.axis('equal')
-edge = 1.5 * geostationary_orbit_length
+edge = 1.5 * satellite_orbit_length
 ax.set_xlim(-edge, edge)
 ax.set_ylim(-edge, edge)
 ax.set_xlabel('Ось абсцисс, м')

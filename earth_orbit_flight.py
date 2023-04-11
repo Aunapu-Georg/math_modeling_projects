@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
 # Определяем переменную величину
-hours = 48
+hours = 24
 seconds_in_hour = 60 ** 2
 frames = 500
 t = np.linspace(0, hours * seconds_in_hour, frames)
