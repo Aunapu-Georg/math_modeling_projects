@@ -1,1 +1,1 @@
-print('Main body')
+print('Empty')
