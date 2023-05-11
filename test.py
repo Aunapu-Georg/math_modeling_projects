@@ -4,15 +4,16 @@ import matplotlib.pyplot as plt
 fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
 
 # Определение параметров поверхности
-phi = np.linspace(0, 2*np.pi, 100)
-theta = np.linspace(0, np.pi, 100)
-R = 5
+phi = np.linspace(0, 2 * np.pi, 100)
+theta = np.linspace(0, 2 * np.pi, 100)
 
 # Параметрическое задание поверхности
-x = R * np.outer(np.cos(phi), np.sin(theta))
-y = R * np.outer(np.sin(phi), np.sin(theta))
-z = R * np.outer(np.ones(np.size(phi)), np.cos(theta))
 
-ax.plot_surface(x, y, z)
+# Параметрическое задание поверхности
+x_surface = np.outer(phi, np.cos(theta))
+y_surface = np.outer(phi, np.sin(theta))
+z_surface = np.outer(np.ones(np.size(theta)), theta * 0.1)
+
+ax.plot_surface(x_surface, y_surface, z_surface)
 
 plt.savefig('test.png')
