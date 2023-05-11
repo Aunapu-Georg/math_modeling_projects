@@ -40,14 +40,13 @@ ax.set_zlabel('Z')
 ani = FuncAnimation(fig, animate, N, interval=50)
 
 # Определение параметров поверхности
-phi = np.linspace(0, 2*np.pi)
-theta = np.linspace(0, np.pi)
-R = 5
+phi = np.linspace(10, 0, N)
+theta = alpha
 
 # Параметрическое задание поверхности
-x = phi * np.cos(theta)
-y = phi * np.sin(theta)
-z = theta * 0.1
+x = np.outer(phi, np.cos(theta))
+y = np.outer(phi, np.sin(theta))
+z = np.outer(np.ones(np.size(theta)), theta * 0.1)
 
 ax.plot_surface(x, y, z)
 
